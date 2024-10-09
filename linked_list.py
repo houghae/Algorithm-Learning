@@ -70,7 +70,7 @@ class SinglyLinkedList:
 
     def search(self, key):
         """
-        Search for first node containing data matching 'key' argument.
+        Search for first node containing data matching the key.
 
         Return the node, or 'None' if not found.
         Takes O(n) time.
@@ -119,6 +119,8 @@ class SinglyLinkedList:
         Overall insert takes O(n) time. 
         """
 
+        if index >= self.__count:
+            raise IndexError("Index out of range")
         if index == 0:
             self.add(data)
         if index > 0:
@@ -209,8 +211,33 @@ class SinglyLinkedList:
         self.__count -= 1
         return current  # Because the removed node is still assigned to current.
 
+    def nodeAtIndex(self, index):
+        """
+        Return the node at a given index value.
+        
+        Takes O(n) time.
+        """
 
+        # This should be similar to insert method.
 
+        current = self.head
+        position = 0
+
+        if index >= self.__count:
+            raise IndexError("Index out of range")
+        if index == 0:
+            return current
+        while position < index:
+            current = current.nextNode
+            position += 1
+        return current
+    
+    def __iter__(self):
+        current = self.head
+        while current:
+            yield current  # Yield returns a value while pausing a method and saving it's state. This can return values that would otherwise bog down memory.
+            current = current.nextNode
+        
 
 
 
