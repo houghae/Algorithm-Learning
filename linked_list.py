@@ -6,7 +6,7 @@ class Node:
 
     def __init__(self, data, nextNode=None):
         self.data = data
-        self.nextNode = nextNode # This is the pointer.
+        self.nextNode = nextNode  # This is the pointer.
 
     def __repr__(self):
         return f"Node data: {self.data}"
@@ -23,8 +23,8 @@ class SinglyLinkedList:
 
     def __init__(self):
         self.head = None
-        # Maintain a count attribute to allow len() to be implemented in constant time.
-        self.__count = 0
+        self.__count = 0  # Maintain a count attribute to allow len() to be implemented in constant time.
+
 
     def isEmpty(self):
         """
@@ -35,7 +35,7 @@ class SinglyLinkedList:
         
         return self.head == None
     
-    def __len__(self):
+    def __len__(self):  # Special dunder method to allow use of len() on instances of these lists.
         """
         Return length of linked list.
 
@@ -109,8 +109,110 @@ class SinglyLinkedList:
             else:
                 nodeList.append(f"{currentNode.data}")
             currentNode = currentNode.nextNode
-        return "->".join(nodeList)
+        return " -> ".join(nodeList)
     
+    def insert(self, data, index):
+        """
+        Insert new node at specified index position. 
+
+        Insertion takes O(1) time, but finding the insertion point takes O(n) time due to traversing every node.
+        Overall insert takes O(n) time. 
+        """
+
+        if index == 0:
+            self.add(data)
+        if index > 0:
+            insertionNode = Node(data)
+            position = index
+            current = self.head
+            while position > 1:
+                current = current.nextNode
+                position -= 1
+            previousNode = current
+            nextNode = current.nextNode
+            previousNode.nextNode = insertionNode
+            insertionNode.nextNode = nextNode
+        self.__count += 1
+
+    def removeWithKey(self, key):
+        """
+        Remove node containing data that matches the key. 
+
+        Return the node, or None if key is not present in list.
+        Takes O(n) time.
+        """
+
+        # Search along list until key is found. CAN NOT use the search method because it would return the node without the reference to the previous node. The search method would only work for a doubly linked list, not singly linked list.
+        # If key is not found, return 'key not found' error.
+
+        current = self.head
+        found = False
+        previous = None
+
+        while current and not found:
+            # Three cases could exist.
+                # The key is found in current, which is also the head node.
+                    # Change found to True, assign next node to head, decrement count by 1.
+                # The key is found in current, which is NOT the head node.
+                    # Change found to True, assign next node to current, assign decrement count by 1. 
+                    # In order to preserve the link from the previous node, you can't just assign to current. It has to be the previous node's next node.
+                # The key isn't found.
+                    # Assign next node to current and repeat while loop. Decrement count by 1.
+            if current.data == key and current is self.head:
+                found = True
+                self.head = current.nextNode
+                self.__count -= 1
+                return current
+            elif current.data == key:
+                found = True
+                previous.nextNode = current.nextNode
+                self.__count -= 1
+                return current
+            else:
+                previous = current
+                current = current.nextNode
+        raise Exception("Key not found") # Could also just return None.
+
+
+
+    def removeWithIndex(self, index):
+        """
+        Remove node at given index value.
+
+        Takes O(n) time.
+        """
+
+        # Define current as head node, position as index.
+        # If index is >= self.__count raise index error.
+        # If index is 0, set head to next node.
+        # While position is > 1:
+            # Set current to next node
+            # Decrement position by 1 
+
+        current = self.head
+        position = index
+
+        if index >= self.__count:
+            raise IndexError("Index out of range")
+        if index == 0:
+            self.head = current.nextNode
+            self.__count -= 1
+            return current
+        while position > 1:
+            current = current.nextNode
+            position -= 1
+        
+        prevNode = current  # This removes the first pointer.
+        current = current.nextNode
+        nextNode = current.nextNode
+        prevNode.nextNode = nextNode  # This creates a new pointer that bypasses current.
+        self.__count -= 1
+        return current  # Because the removed node is still assigned to current.
+
+
+
+
+
 
 
 
