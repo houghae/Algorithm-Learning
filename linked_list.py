@@ -1,3 +1,5 @@
+# I wrote this in camelCase to experiment with preferences. I realize Python naming convention is snake_case.
+
 class Node:
     """
     An object for storing a single node of a linked list.
@@ -9,7 +11,7 @@ class Node:
         self.nextNode = nextNode  # This is the pointer.
 
     def __repr__(self):
-        return f"Node data: {self.data}"
+        return f"Node data: {self.data}, Next Node: {self.nextNode}"
 
 class SinglyLinkedList:
     """
@@ -25,6 +27,62 @@ class SinglyLinkedList:
         self.head = None
         self.__count = 0  # Maintain a count attribute to allow len() to be implemented in constant time.
 
+    def __iter__(self):
+        current = self.head
+        while current:
+            yield current  # Yield returns a value while pausing a method and saving it's state. This can return values that would otherwise bog down memory.
+            current = current.nextNode
+
+    def __len__(self):  # Special dunder method to allow use of len() on instances of these lists. More pythonic than size method.
+        """
+        Return length of linked list.
+
+        Takes O(1), or constant, time.
+        """
+
+        return self.__count
+
+    def __repr__(self):
+        """
+        Return string representation of the list.
+
+        Takes O(n) time.
+        """
+
+        # Create an empty list.
+        # Assign the head of a list instance to a local variable.
+        # Begin while loop
+            # If variable == head, append the list to say "Head is 'someData'"
+            # Elif the nextNode is None, append the list "Tail is 'someData'"
+            # Else - append the list with 'someData'
+            # Assign the nextNode of the variable to the variable.
+        # Return '->'.join(list)
+
+        nodeList = []
+        currentNode = self.head
+        while currentNode:
+            if currentNode == self.head:
+                nodeList.append(f"Head is {currentNode.data}")
+            elif currentNode.nextNode is None: # More Pythonic to use is instead of == when checking for the exact object None.
+                nodeList.append(f"Tail is {currentNode.data}")
+            else:
+                nodeList.append(f"{currentNode.data}")
+            currentNode = currentNode.nextNode
+        return " -> ".join(nodeList)
+    
+    def reprAdvanced(self):
+        """
+        Return string representation of the list using generators.
+        """
+
+        # Obviously this is a redundant repr method, but I wanted to practice optimizing for a large list. This uses generators so the list can be printed without allocating everything to memory first.
+        # This also uses a Ternary conditional to fit logic into the join method. Really cool!
+        return " -> ".join(
+            f"Head is {currentNode.data}" if currentNode == self.head else
+            f"Tail is {currentNode.data}" if currentNode.nextNode is None else
+            f"{currentNode.data}"
+            for currentNode in self
+        )
 
     def isEmpty(self):
         """
@@ -35,16 +93,7 @@ class SinglyLinkedList:
         
         return self.head == None
     
-    def __len__(self):  # Special dunder method to allow use of len() on instances of these lists.
-        """
-        Return length of linked list.
-
-        Takes O(1), or constant, time.
-        """
-
-        return self.__count
-
-    def size(self):
+    def size(self):  # For practice I included both len and size methods, even though len does the same thing in constant time.
         """
         Return number of nodes in the list.
 
@@ -84,33 +133,6 @@ class SinglyLinkedList:
                 current = current.nextNode
         return None
     
-    def __repr__(self):
-        """
-        Return string representation of the list.
-
-        Takes O(n) time.
-        """
-        # Create an empty list.
-        # Assign the head of a list instance to a local variable.
-        # Begin while loop
-            # If variable == head, append the list to say "Head is 'someData'"
-            # Elif the nextNode is None, append the list "Tail is 'someData'"
-            # Else - append the list with 'someData'
-            # Assign the nextNode of the variable to the variable.
-        # Return '->'.join(list)
-
-        nodeList = []
-        currentNode = self.head
-        while currentNode:
-            if currentNode == self.head:
-                nodeList.append(f"Head is {currentNode.data}")
-            elif currentNode.nextNode is None: # More Pythonic to us is instead of == when checking for the exact object None.
-                nodeList.append(f"Tail is {currentNode.data}")
-            else:
-                nodeList.append(f"{currentNode.data}")
-            currentNode = currentNode.nextNode
-        return " -> ".join(nodeList)
-    
     def insert(self, data, index):
         """
         Insert new node at specified index position. 
@@ -119,7 +141,7 @@ class SinglyLinkedList:
         Overall insert takes O(n) time. 
         """
 
-        if index >= self.__count:
+        if index < 0 >= self.__count:
             raise IndexError("Index out of range")
         if index == 0:
             self.add(data)
@@ -173,9 +195,7 @@ class SinglyLinkedList:
             else:
                 previous = current
                 current = current.nextNode
-        raise Exception("Key not found") # Could also just return None.
-
-
+        return None  # Raising an exeption here is a bit harsh and would force someone to add error handling. Searching for a key that doesn't exist is expected in some cases.
 
     def removeWithIndex(self, index):
         """
@@ -232,20 +252,4 @@ class SinglyLinkedList:
             position += 1
         return current
     
-    def __iter__(self):
-        current = self.head
-        while current:
-            yield current  # Yield returns a value while pausing a method and saving it's state. This can return values that would otherwise bog down memory.
-            current = current.nextNode
-        
-
-
-
-
-
-
-
-
-#def main():
-#if __name__=="__main__":
-#    main()
+    
